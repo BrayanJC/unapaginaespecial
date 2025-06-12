@@ -1,1 +1,327 @@
-<h1> Hola </h1>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Una Pregunta Especial</title>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      text-align: center;
+      background-color: #f1f1f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    button,
+    .respuesta-btn {
+      padding: 20px 40px;
+      font-size: 24px;
+      background: linear-gradient(90deg, #fff 60%, #eaeaea 100%);
+      color: #1F1F2C;
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      margin: 0;
+      box-shadow: 0 4px 16px #1F1F2C30;
+      transition:
+        transform 0.18s,
+        background 0.8s cubic-bezier(.4, 0, .2, 1),
+        color 0.8s cubic-bezier(.4, 0, .2, 1),
+        left 0.18s,
+        top 0.18s;
+      z-index: 1;
+    }
+
+    #startButton {
+      font-size: 24px;
+      padding: 20px 40px;
+    } 
+
+    button:active,
+    .respuesta-btn:active {
+      transform: scale(0.96);
+      background: linear-gradient(90deg, #eaeaea 60%, #fff 100%);
+      color: #1F1F2C;
+    }
+
+    #siBtn.parpadeo-verde {
+      background: linear-gradient(90deg, #1F1F2C 60%, #282847 100%) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 16px #1F1F2C80 !important;
+    }
+
+    #siBtn.parpadeo-amarillo {
+      background: linear-gradient(90deg, #fff 60%, #eaeaea 100%) !important;
+      color: #1F1F2C !important;
+      box-shadow: 0 4px 16px #fff8 !important;
+    }
+
+    #countdown {
+      font-size: 300px;
+      font-weight: bold;
+      color: #1F1F2C;
+      display: none;
+      padding: 0 40px;
+      line-height: 1.1;
+      letter-spacing: 2px;
+    }
+
+    @keyframes slideFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #question {
+      font-size: 44px;
+      font-weight: bold;
+      display: none;
+      color: #1F1F2C;
+      margin-bottom: 30px;
+      animation: slideFadeIn 1s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    #respuestas {
+      display: none;
+      width: 270px;
+      /* reducido de 320px */
+      margin: 0 auto;
+      user-select: none;
+      position: relative;
+      grid-template-columns: 1fr 1fr;
+      gap: 0px;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .no-placeholder {
+      display: inline-block;
+      min-width: 24px;
+      width: 24px;
+      height: 1px;
+      grid-column: 2;
+      grid-row: 1;
+      pointer-events: none;
+    }
+
+    .respuesta-final {
+      margin-top: 28px;
+      font-size: 1.2em;
+      font-weight: 700;
+      min-height: 2.8em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1F1F2C;
+    }
+
+    #siBtn {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    #noBtn {
+      grid-column: 2;
+      grid-row: 1;
+      position: relative;
+    }
+
+    #noBtn.evasivo {
+      position: fixed !important;
+      left: 0;
+      top: 0;
+      z-index: 10;
+    }
+
+    @media (max-width: 500px) {
+      #countdown {
+        font-size: 160px;
+        padding: 0 10px;
+      }
+
+      #question {
+        font-size: 28px;
+      }
+
+      #respuestas {
+        width: 200px;
+        /* reducido de 280px */
+      }
+
+      button,
+      .respuesta-btn {
+        font-size: 17px;
+        padding: 16px 12px;
+        min-width: 80px;
+        /* también reducido */
+        margin: 0;
+      }
+
+      .no-placeholder {
+        min-width: 12px;
+        width: 12px;
+        height: 1px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button id="startButton" onclick="startCountdown()">¿Lista?</button>
+  <div id="countdown"></div>
+  <h1 id="question">¿Quieres ser mi novia?</h1>
+  <div id="respuestas">
+    <button class="respuesta-btn" id="siBtn" onclick="responde()">Sí</button>
+    <button class="respuesta-btn" id="noBtn">No</button>
+    <span class="no-placeholder" id="noPlaceholder"></span>
+  </div>
+  <div class="respuesta-final" id="respuestaFinal" aria-live="polite"></div>
+
+  <script>
+    function startCountdown() {
+      let count = 20;
+      document.getElementById("startButton").style.display = "none";
+      let countdownElement = document.getElementById("countdown");
+      countdownElement.style.display = "block";
+      countdownElement.innerText = count;
+
+      let interval = setInterval(function () {
+        count--;
+        countdownElement.innerText = count;
+        if (count === 0) {
+          clearInterval(interval);
+          countdownElement.style.display = "none";
+          document.getElementById("question").style.display = "block";
+          document.getElementById("respuestas").style.display = "grid";
+        }
+      }, 1000);
+    }
+
+    let parpadeoActivo = false;
+    let parpadeoTimer;
+
+    function responde() {
+      const text = "¡Sabía que dirías que sí!";
+      document.getElementById("respuestaFinal").innerHTML =
+        `<span>${text}</span> 😍💖`;
+      const siBtn = document.getElementById('siBtn');
+      siBtn.disabled = true;
+      document.getElementById('noBtn').disabled = true;
+
+      if (parpadeoActivo) return;
+      parpadeoActivo = true;
+      siBtn.classList.remove('parpadeo-amarillo', 'parpadeo-verde');
+      let estadoVerde = true;
+      function loopParpadeo() {
+        if (!parpadeoActivo) return;
+        if (estadoVerde) {
+          siBtn.classList.remove('parpadeo-amarillo');
+          siBtn.classList.add('parpadeo-verde');
+        } else {
+          siBtn.classList.remove('parpadeo-verde');
+          siBtn.classList.add('parpadeo-amarillo');
+        }
+        estadoVerde = !estadoVerde;
+        parpadeoTimer = setTimeout(loopParpadeo, 900);
+      }
+      loopParpadeo();
+    }
+
+    const noBtn = document.getElementById('noBtn');
+    const siBtn = document.getElementById('siBtn');
+    let evasivo = false;
+    let prevPos = { left: 0, top: 0 };
+    let lastCursor = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+    function moverNoBtn(cursorX = lastCursor.x, cursorY = lastCursor.y) {
+      noBtn.style.transition = "left 0.24s, top 0.24s";
+      if (!evasivo) {
+        const rect = noBtn.getBoundingClientRect();
+        noBtn.classList.add('evasivo');
+        noBtn.style.left = rect.left + "px";
+        noBtn.style.top = rect.top + "px";
+        evasivo = true;
+        prevPos = { left: rect.left, top: rect.top };
+      }
+      const noRect = noBtn.getBoundingClientRect();
+      const siRect = siBtn.getBoundingClientRect();
+      const padding = 12;
+      const maxLeft = Math.max(0, window.innerWidth - noRect.width - padding);
+      const maxTop = Math.max(0, window.innerHeight - noRect.height - padding);
+
+      let bestPos = { left: prevPos.left, top: prevPos.top };
+      let maxDist = -1;
+      const intentos = 24;
+      for (let i = 0; i < intentos; i++) {
+        let newLeft = Math.random() * maxLeft;
+        let newTop = Math.random() * maxTop;
+        const futureNo = {
+          left: newLeft,
+          right: newLeft + noRect.width,
+          top: newTop,
+          bottom: newTop + noRect.height
+        };
+        const overlap = !(futureNo.right < siRect.left ||
+          futureNo.left > siRect.right ||
+          futureNo.bottom < siRect.top ||
+          futureNo.top > siRect.bottom);
+        if (overlap) continue;
+        const dist = Math.hypot(
+          (newLeft + noRect.width / 2) - cursorX,
+          (newTop + noRect.height / 2) - cursorY
+        );
+        if (dist > maxDist) {
+          maxDist = dist;
+          bestPos = { left: newLeft, top: newTop };
+        }
+      }
+      bestPos.left = Math.max(0, Math.min(bestPos.left, window.innerWidth - noRect.width - 2));
+      bestPos.top = Math.max(0, Math.min(bestPos.top, window.innerHeight - noRect.height - 2));
+      prevPos = bestPos;
+      noBtn.style.left = bestPos.left + "px";
+      noBtn.style.top = bestPos.top + "px";
+    }
+
+    document.addEventListener('mousemove', function (e) {
+      lastCursor = { x: e.clientX, y: e.clientY };
+      if (document.getElementById("respuestas").style.display === "grid") {
+        const noRect = noBtn.getBoundingClientRect();
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+        const threshold = 90;
+        const noCenterX = noRect.left + noRect.width / 2;
+        const noCenterY = noRect.top + noRect.height / 2;
+        const dist = Math.hypot(mouseX - noCenterX, mouseY - noCenterY);
+        if (dist < threshold) {
+          moverNoBtn(mouseX, mouseY);
+        }
+      }
+    });
+
+    noBtn.addEventListener('touchstart', function (e) {
+      let touch = e.touches[0];
+      moverNoBtn(touch.clientX, touch.clientY);
+      e.preventDefault();
+    });
+
+    noBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+    });
+  </script>
+</body>
+
+</html>
